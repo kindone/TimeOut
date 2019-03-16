@@ -1,19 +1,68 @@
-<!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Hello World!</title>
-  </head>
-  <body>
-    <h1>Hello World!</h1>
-    <!-- All of the Node.js APIs are available in this renderer process. -->
-    We are using Node.js <script>document.write(process.versions.node)</script>,
-    Chromium <script>document.write(process.versions.chrome)</script>,
-    and Electron <script>document.write(process.versions.electron)</script>
-  </body>
+<head>
+<title>Clock</title>
+<style type="text/css">
+body {
+    /* background: black; */
+}
 
-  <script>
-    // You can also require other files to run in this process
-    require('./dist/renderer.js')
-  </script>
+.wrapper {
+  height:100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* add code below to also center horizontally */
+  align-items: center;
+}
+
+.clock {
+    color: #59f442;
+    font-size: 200px;
+    font-family: Arial;
+    letter-spacing: 7px;
+    opacity: 0.8;
+}
+</style>
+</head>
+<body>
+  <div class="wrapper">
+  <div id="MyClockDisplay" class="clock"></div>
+  </div>
+
+<script type="text/javascript">
+  function showTime(){
+    var date = new Date();
+    var h = date.getHours(); // 0 - 23
+    var m = date.getMinutes(); // 0 - 59
+    var s = date.getSeconds(); // 0 - 59
+    var session = "AM";
+
+    if(h == 0){
+        h = 12;
+    }
+
+    if(h > 12){
+        h = h - 12;
+        session = "PM";
+    }
+
+    h = (h < 10) ? "0" + h : h;
+    m = (m < 10) ? "0" + m : m;
+    s = (s < 10) ? "0" + s : s;
+
+    var time = h + ":" + m + ":" + s + " " + session;
+    document.getElementById("MyClockDisplay").innerText = time;
+    document.getElementById("MyClockDisplay").textContent = time;
+
+    setTimeout(showTime, 1000);
+
+}
+
+showTime();
+</script>
+<script>
+  // You can also require other files to run in this process
+  require('./dist/renderer.js')
+</script>
+</body>
 </html>

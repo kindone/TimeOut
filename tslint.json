@@ -10,7 +10,13 @@
     "no-arg": true,
     "no-bitwise": true,
     "no-conditional-assignment": true,
-    "no-consecutive-blank-lines": false
+    "no-consecutive-blank-lines": false,
+    "curly": false,
+    "no-var-requires": false,
+    "object-literal-sort-keys": false,
+    "no-console": false,
+    "interface-name": false,
+    "semicolon": [false, "never"]
   },
   "jsRules": {
     "max-line-length": {

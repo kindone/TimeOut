@@ -1,51 +1,107 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, dialog, Menu, nativeImage, Tray } from "electron";
+import * as moment from "moment";
 import * as path from "path";
 
-let mainWindow: Electron.BrowserWindow;
 
-function createWindow() {
-  // Create the browser window.
-  mainWindow = new BrowserWindow({
+const createMainWindow = () => {
+  // create browser window hidden
+  console.log("WINDOW CREATED")
+  const window = new BrowserWindow({
     height: 600,
     width: 800,
-  });
-
-  // and load the index.html of the app.
-  mainWindow.loadFile(path.join(__dirname, "../index.html"));
-
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools();
-
-  // Emitted when the window is closed.
-  mainWindow.on("closed", () => {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
-    mainWindow = null;
-  });
+    transparent: true,
+    title: "Simple Clock and Stop Watch",
+    alwaysOnTop: true,
+    frame: false,
+  })
+  window.loadURL(`file://${path.join(__dirname, "../index.html")}`)
+  window.maximize();
+  window.setIgnoreMouseEvents(true);
+  // window.webContents.openDevTools()
+  return window
 }
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.on("ready", createWindow);
 
-// Quit when all windows are closed.
-app.on("window-all-closed", () => {
-  // On OS X it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform !== "darwin") {
-    app.quit();
+class WindowHandle {
+  private window: BrowserWindow
+
+  constructor(isLazy = false) {
+    if (!isLazy)
+      this.window = createMainWindow()
   }
-});
 
-app.on("activate", () => {
-  // On OS X it"s common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (mainWindow === null) {
-    createWindow();
+  public show() {
+    this.createIfNeeded()
+    this.window.show()
   }
-});
 
-// In this file you can include the rest of your app"s specific main process
-// code. You can also put them in separate files and require them here.
+  public hide() {
+    this.createIfNeeded()
+    this.window.hide()
+  }
+
+  private createIfNeeded() {
+    if (this.window === undefined || this.window.isDestroyed()) {
+      this.window = createMainWindow()
+      this.window.on("closed", () => {
+        this.window = undefined
+      })
+    }
+  }
+}
+
+const startupMainWindow = () => {
+  return new WindowHandle()
+}
+
+const startupTray = (mainWindow: WindowHandle) => {
+  const assetsDirectory = path.join(__dirname, "assets")
+  const trayIcon = "clipboardTemplate.png" // must use *Template.png name to conform with macOS dark theme
+  const trayIconPath = path.join(assetsDirectory, trayIcon)
+  const tray = new Tray(trayIconPath)
+
+  const contextMenu = Menu.buildFromTemplate([
+    {label: "About", click() {
+      dialog.showMessageBox(
+        { message: "Simple Clock and Stop Watch",
+          buttons: ["OK"] })
+    }},
+    {label: "Start Stop Watch", click() {
+      mainWindow.show()
+    }},
+    {label: "Quit", click() {
+      app.quit()
+    }},
+  ])
+  tray.setToolTip("Simple Clock and Stop Watch")
+  tray.setContextMenu(contextMenu)
+
+}
+
+const startup = () => {
+  app.dock.hide()
+
+  const mainWindow = startupMainWindow()
+  startupTray(mainWindow)
+}
+
+
+app.on("ready", () => setTimeout(startup, 500));
+
+// // Quit when all windows are closed.
+// app.on("window-all-closed", () => {
+//   // On OS X it is common for applications and their menu bar
+//   // to stay active until the user quits explicitly with Cmd + Q
+//   if (process.platform !== "darwin") {
+//     app.quit();
+//   }
+// });
+
+// app.on("activate", () => {
+//   // On OS X it"s common to re-create a window in the app when the
+//   // dock icon is clicked and there are no other windows open.
+//   if (mainWindow === null) {
+//     createWindow();
+//   }
+// });
+
