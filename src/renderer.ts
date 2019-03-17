@@ -19,15 +19,18 @@ const fadeOut = () => {
   })
 }
 
+const getElasedTimeInHoursAndMinutes = (from: moment.Moment, to: moment.Moment) => {
+  const milliseconds = to.diff(from)
+
+  const hours = Math.floor(milliseconds / (1000 * 60 * 60))
+  const remainder = milliseconds - hours * (1000 * 60 * 60)
+  const minutes = Math.floor(remainder / (1000 * 60))
+
+  return [hours, minutes]
+}
+
 const getElapsedTimeFormatted = (from: moment.Moment, to: moment.Moment) => {
-    const milliseconds = to.diff(from)
-
-    if (milliseconds <= 0)
-      return ""
-
-    const hours = Math.floor(milliseconds / (1000 * 60 * 60))
-    const remainder = milliseconds - hours * (1000 * 60 * 60)
-    const minutes = Math.floor(remainder / (1000 * 60))
+    const [hours, minutes] = getElasedTimeInHoursAndMinutes(from, to)
 
     if (hours > 0 || minutes > 0) {
       const hourStr = hours > 1 ? " hours " : " hour"
@@ -35,6 +38,15 @@ const getElapsedTimeFormatted = (from: moment.Moment, to: moment.Moment) => {
       return (hours > 0 ? (hours.toString() + hourStr) : "") + (minutes > 0 ? (minutes.toString() + minuteStr) : "")
     } else
       return ""
+}
+
+const getElapsedTimeShort = (from: moment.Moment, to: moment.Moment) => {
+  const [hours, minutes] = getElasedTimeInHoursAndMinutes(from, to)
+
+  if (hours > 0 || minutes > 0) {
+    return (hours > 0 ? (hours.toString() + "h ") : "") + (minutes > 0 ? (minutes.toString() + "min") : "")
+  } else
+    return ""
 }
 
 
@@ -69,8 +81,7 @@ const startupTray = () => {
     const trayUpdateInterval = 60 * 1000
     const updateTray = () => {
       const now = moment()
-      const elapsed = now.diff(origin)
-      tray.setTitle(moment.duration(elapsed, "milliseconds").humanize())
+      tray.setTitle(getElapsedTimeShort(origin, now))
     }
     updateTray()
     setInterval(updateTray, trayUpdateInterval)
@@ -78,20 +89,18 @@ const startupTray = () => {
     const contextMenu = remote.Menu.buildFromTemplate([
       {label: "About", click() {
         remote.dialog.showMessageBox(
-          { message: "Simple Clock and Stop Watch",
+          { message: "Simple Clock and Elapsed Timer",
             buttons: ["OK"] })
       }},
-      {label: "Reset Stop Watch", click() {
+      {label: "Reset elapsed time", click() {
         resetStopWatch()
         updateTray()
       }},
       {label: "Quit", click() {
-        // remote.app.quit()
-        // alert("quit")
         ipcRenderer.send("quit")
       }},
     ])
-    tray.setToolTip("Simple Clock and Stop Watch")
+    tray.setToolTip("Simple Clock and Elapsed Timer")
     tray.setContextMenu(contextMenu)
 }
 
@@ -99,14 +108,6 @@ startupTray()
 
 $(".wrapper").hide()
 fadeIn()
-
-// let alertStr = getElapsedTimeFormatted(moment(), moment().add(44, "minutes")) + ", "
-// alertStr += getElapsedTimeFormatted(moment(), moment().add(1, "hours")) + ", "
-// alertStr += getElapsedTimeFormatted(moment(), moment().add(1, "minutes")) + ", "
-// alertStr += getElapsedTimeFormatted(moment(), moment().add(3, "hours")) + ", "
-// alertStr += getElapsedTimeFormatted(moment(), moment().add(2, "hours").add(23, "minutes")) + ", "
-// alertStr += getElapsedTimeFormatted(moment(), moment().add(1, "days").add(23, "minutes"))
-// alert(alertStr)
 
 ipcRenderer.on("fadeIn", fadeIn)
 ipcRenderer.on("fadeOut", fadeOut)
