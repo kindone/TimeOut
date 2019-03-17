@@ -4,7 +4,7 @@ import * as moment from "moment";
 import * as path from "path";
 
 
-let stopWatch = moment()
+let origin = moment()
 
 const fadeIn = () => {
   console.log("fadeIn")
@@ -19,9 +19,22 @@ const fadeOut = () => {
   })
 }
 
-const getElapsedTimeFormatted = (from: moment.Moment, now: moment.Moment) => {
-    const milliseconds = now.diff(from)
-    const normalized = Math.floor(milliseconds / (1000 * 60)) * 1000 * 60 // by minutes
+const getElapsedTimeFormatted = (from: moment.Moment, to: moment.Moment) => {
+    const milliseconds = to.diff(from)
+
+    if (milliseconds <= 0)
+      return ""
+
+    const hours = Math.floor(milliseconds / (1000 * 60 * 60))
+    const remainder = milliseconds - hours * (1000 * 60 * 60)
+    const minutes = Math.floor(remainder / (1000 * 60))
+
+    if (hours > 0 || minutes > 0) {
+      const hourStr = hours > 1 ? " hours " : " hour"
+      const minuteStr = minutes > 1 ? " minutes" : " minute"
+      return (hours > 0 ? (hours.toString() + hourStr) : "") + (minutes > 0 ? (minutes.toString() + minuteStr) : "")
+    } else
+      return ""
 }
 
 
@@ -32,8 +45,9 @@ const showTime = () => {
     document.getElementById("ClockDisplay").textContent = time;
 
     let elapsed = ""
-    if (now.diff(stopWatch) > 1000 * 60 * 1) { // must be greater than some time to be useful
-        elapsed = now.from(stopWatch, true)
+    if (now.diff(origin) > 1000 * 60 * 1) { // must be greater than some time to be useful
+        // elapsed = now.from(stopWatch, true)
+        elapsed = getElapsedTimeFormatted(origin, now)
     }
     document.getElementById("StopWatchDisplay").innerText = elapsed;
     document.getElementById("StopWatchDisplay").textContent = elapsed;
@@ -43,7 +57,7 @@ const showTime = () => {
 showTime();
 
 const resetStopWatch = () => {
-    stopWatch = moment()
+    origin = moment()
 }
 
 const startupTray = () => {
@@ -55,7 +69,7 @@ const startupTray = () => {
     const trayUpdateInterval = 60 * 1000
     const updateTray = () => {
       const now = moment()
-      const elapsed = now.diff(stopWatch)
+      const elapsed = now.diff(origin)
       tray.setTitle(moment.duration(elapsed, "milliseconds").humanize())
     }
     updateTray()
@@ -85,6 +99,14 @@ startupTray()
 
 $(".wrapper").hide()
 fadeIn()
+
+// let alertStr = getElapsedTimeFormatted(moment(), moment().add(44, "minutes")) + ", "
+// alertStr += getElapsedTimeFormatted(moment(), moment().add(1, "hours")) + ", "
+// alertStr += getElapsedTimeFormatted(moment(), moment().add(1, "minutes")) + ", "
+// alertStr += getElapsedTimeFormatted(moment(), moment().add(3, "hours")) + ", "
+// alertStr += getElapsedTimeFormatted(moment(), moment().add(2, "hours").add(23, "minutes")) + ", "
+// alertStr += getElapsedTimeFormatted(moment(), moment().add(1, "days").add(23, "minutes"))
+// alert(alertStr)
 
 ipcRenderer.on("fadeIn", fadeIn)
 ipcRenderer.on("fadeOut", fadeOut)
