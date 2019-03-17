@@ -1,30 +1,33 @@
 {
-  "name": "electron-quick-start-typescript",
+  "name": "TimeOut",
   "version": "1.0.0",
-  "description": "A minimal Electron application written with Typescript",
+  "description": "TimeOut",
+  "main": "./dist/index.js",
   "scripts": {
+    "assets": "rsync -az ./src/assets ./dist/",
     "build": "tsc",
     "watch": "tsc -w",
     "lint": "tslint -c tslint.json -p tsconfig.json",
-    "start": "npm run build && electron --enable-transparent-visuals --disable-gpu ./dist/main.js"
+    "start": "npm run build && electron --enable-transparent-visuals --disable-gpu ./dist/index.js",
+    "package": "electron-packager . TimeOut --out=pkg"
   },
-  "repository": "https://github.com/electron/electron-quick-start-typescript",
+  "repository": "https://github.com/kindone/timeout",
   "keywords": [
     "Electron",
-    "quick",
-    "start",
-    "tutorial",
-    "demo",
     "typescript"
   ],
-  "author": "GitHub",
+  "author": "kindone",
   "license": "CC0-1.0",
   "devDependencies": {
+    "@types/jquery": "^3.3.29",
+    "asar": "^1.0.0",
     "electron": "^4.0.5",
+    "electron-packager": "^13.1.1",
     "tslint": "^5.10.0",
     "typescript": "^2.8.3"
   },
   "dependencies": {
+    "jquery": "^3.3.1",
     "moment": "^2.24.0"
   }
 }

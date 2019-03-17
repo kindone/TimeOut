@@ -1,0 +1,45 @@
+<html>
+<head>
+<title>Clock</title>
+<style type="text/css">
+body {
+    /* background: black; */
+}
+
+.wrapper {
+  height:100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* add code below to also center horizontally */
+  align-items: center;
+}
+
+.clock {
+    color: #59f442;
+    font-size: 200px;
+    font-family: Arial;
+    letter-spacing: 7px;
+    opacity: 0.8;
+}
+
+.stopwatch {
+    color: #f44b42;
+    font-size: 200px;
+    font-family: Arial;
+    letter-spacing: 7px;
+    opacity: 0.8;
+}
+</style>
+</head>
+<body>
+  <div class="wrapper">
+    <div id="ClockDisplay" class="clock"></div>
+    <div id="StopWatchDisplay" class="stopwatch"></div>
+  </div>
+<script>
+  // You can also require other files to run in this process
+  require('../renderer.js')
+</script>
+</body>
+</html>
