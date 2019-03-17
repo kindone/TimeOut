@@ -15,6 +15,14 @@ const createMainWindow = () => {
     alwaysOnTop: true,
     frame: false,
     closable: false,
+    focusable: false,
+    show: false,
+    // type: "desktop",
+  })
+  window.on("show", () => {
+    console.log("ready-to-show")
+    window.blur()
+    window.blurWebView()
   })
   window.loadURL(`file://${path.join(__dirname, "assets/index.html")}`)
   window.maximize();
@@ -38,7 +46,7 @@ class WindowHandle {
 
   public fadeIn() {
     this.createIfNeeded()
-    this.window.show()
+    this.window.showInactive() // prevent having focus
     this.window.webContents.send("fadeIn")
   }
 
