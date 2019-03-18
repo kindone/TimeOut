@@ -3,6 +3,7 @@ import * as moment from "moment";
 import * as path from "path";
 
 const debug = false
+const showDuration = debug ? 6000 : 4000
 
 const createMainWindow = () => {
   // create browser window hidden
@@ -97,7 +98,6 @@ const getNextSchedule = (): number =>  {
 }
 
 const startup = () => {
-  const showDuration = debug ? 6000 : 3000
 
   const mainWindow = startupMainWindow()
   // startupTray(mainWindow)

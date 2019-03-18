@@ -11,7 +11,7 @@
     "start": "npm run build && electron --enable-transparent-visuals --disable-gpu ./dist/index.js",
     "package": "electron-packager . TimeOut --out=pkg --ignore=src --ignore=pkg --icon=icon.icns --asar --overwrite",
     "dmg": "electron-installer-dmg ./pkg/TimeOut-darwin-x64/TimeOut.app TimeOut --out=pkg --overwrite --icon=icon.icns",
-    "release" : "npm run build && npm run package && npm run dmg"
+    "release": "npm run assets && npm run build && npm run package && npm run dmg"
   },
   "repository": "https://github.com/kindone/timeout",
   "keywords": [

@@ -7,6 +7,7 @@ body {
 }
 
 .wrapper {
+  margin:0;
   height:100%;
   display: flex;
   flex-direction: column;
@@ -15,25 +16,36 @@ body {
   align-items: center;
 }
 
+.background {
+  position:absolute;
+  height:100%;
+  width:100%;
+  opacity:0.6;
+  background: black;
+}
+
 .clock {
     color: #59f442;
-    font-size: 200px;
+    /* font-size: 200px; */
     font-family: Arial;
     letter-spacing: 7px;
     opacity: 0.8;
+    font-size: 16vw;
 }
 
 .stopwatch {
-    color: #f44b42;
+    color: #f27a59;
     font-size: 200px;
     font-family: Arial;
     letter-spacing: 7px;
     opacity: 0.8;
+    font-size: 9vw;
 }
 </style>
 </head>
 <body>
   <div class="wrapper">
+    <div class="background"></div>
     <div id="ClockDisplay" class="clock"></div>
     <div id="StopWatchDisplay" class="stopwatch"></div>
   </div>
