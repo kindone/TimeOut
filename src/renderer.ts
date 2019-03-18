@@ -33,7 +33,7 @@ const getElapsedTimeFormatted = (from: moment.Moment, to: moment.Moment) => {
     const [hours, minutes] = getElasedTimeInHoursAndMinutes(from, to)
 
     if (hours > 0 || minutes > 0) {
-      const hourStr = hours > 1 ? " hours " : " hour"
+      const hourStr = hours > 1 ? " hours " : " hour "
       const minuteStr = minutes > 1 ? " minutes" : " minute"
       return (hours > 0 ? (hours.toString() + hourStr) : "") + (minutes > 0 ? (minutes.toString() + minuteStr) : "")
     } else
