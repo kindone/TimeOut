@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog, ipcMain, Menu, Tray } from "electron";
+import { app, BrowserWindow, dialog, ipcMain, Menu, powerMonitor, Tray } from "electron";
 import * as moment from "moment";
 import * as path from "path";
 
@@ -54,13 +54,11 @@ class WindowHandle {
   public fadeOut() {
     this.createIfNeeded()
     this.window.webContents.send("fadeOut")
-    console.log("fadeOut")
   }
 
   public hide() {
     this.createIfNeeded()
     this.window.hide()
-    console.log("hide")
   }
 
   public close() {
@@ -86,13 +84,15 @@ const startupMainWindow = () => {
 
 const getNextSchedule = (): number =>  {
   const now = moment()
-  const nextHour = moment(now).startOf("hour").add(1, "hours")
   const next10Minutes = moment(now)
-    .set("minutes", now.minute() - (now.minute() % 10)).add(10, "minutes").startOf("minute")
+    .set("minutes", now.minute() - (now.minute() % 10)).add(9, "minutes").startOf("minute").add(57, "seconds")
 
-  const next = nextHour.isBefore(next10Minutes) ? nextHour : next10Minutes
+  // const nextHour = moment(now).startOf("hour").add(1, "hours")
+  // const next = nextHour.isBefore(next10Minutes) ? nextHour : next10Minutes
+  const next = next10Minutes
   const timeout = next.diff(now)
-  console.log(now, nextHour, next10Minutes, next, timeout)
+  // console.log(now, nextHour, next10Minutes, next, timeout)
+  console.log(now, next10Minutes, next, timeout)
 
   return timeout
 }
@@ -102,17 +102,30 @@ const startup = () => {
   const mainWindow = startupMainWindow()
   // startupTray(mainWindow)
 
+  let timeout: NodeJS.Timeout = null
+
   const hideAndScheduleShow = () => {
+    if (timeout != null)
+      clearTimeout(timeout)
+    timeout = null
     mainWindow.fadeOut()
     setTimeout(showAndScheduleHide, getNextSchedule())
   }
 
   const showAndScheduleHide = () => {
+    if (timeout != null)
+      clearTimeout(timeout)
     mainWindow.fadeIn()
-    setTimeout(hideAndScheduleShow, showDuration)
+    timeout = setTimeout(hideAndScheduleShow, showDuration)
   }
 
   showAndScheduleHide()
+
+  // bug: resume from standby
+  powerMonitor.on("resume", () => {
+    console.log("resume from standby")
+    hideAndScheduleShow()
+  })
 
   ipcMain.on("quit", () => {
     mainWindow.close()
@@ -121,6 +134,10 @@ const startup = () => {
 
   ipcMain.on("hide", () => {
     mainWindow.hide()
+  })
+
+  ipcMain.on("show", () => {
+    showAndScheduleHide()
   })
 }
 

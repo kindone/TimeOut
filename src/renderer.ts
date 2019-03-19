@@ -89,10 +89,13 @@ const startupTray = () => {
       const dimmingLabel = "Turn " + (dimming ? "off" : "on") + " background dimming"
 
       const contextMenu = remote.Menu.buildFromTemplate([
-        {label: "About", click() {
+        {label: "About TimeOut", click() {
           remote.dialog.showMessageBox(
             { message: "Simple Clock and Elapsed Timer",
               buttons: ["OK"] })
+        }},
+        {label: "Display the clock now", click() {
+          ipcRenderer.send("show")
         }},
         {label: dimmingLabel, click() {
           if (!dimming)
