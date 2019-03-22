@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog, ipcMain, Menu, powerMonitor, Tray } from "electron";
+import { app, BrowserWindow, dialog, ipcMain, Menu, powerMonitor, screen, Tray } from "electron";
 import * as moment from "moment";
 import * as path from "path";
 
@@ -18,7 +18,6 @@ const createMainWindow = () => {
     closable: false,
     focusable: false,
     show: false,
-    // type: "desktop",
   })
   window.on("show", () => {
     console.log("ready-to-show")
@@ -33,11 +32,15 @@ const createMainWindow = () => {
     window.setIgnoreMouseEvents(true);
   }
 
+  screen.on("display-metrics-changed", () => {
+    window.maximize()
+  })
+
   return window
 }
 
 
-class WindowHandle {
+class MainWindow {
   private window: BrowserWindow
 
   constructor(isLazy = false) {
@@ -79,22 +82,23 @@ class WindowHandle {
 }
 
 const startupMainWindow = () => {
-  return new WindowHandle()
+  return new MainWindow()
 }
 
-const getNextSchedule = (): number =>  {
-  const now = moment()
+const getNextSchedule = (now: moment.Moment): number =>  {
   const next10Minutes = moment(now)
-    .set("minutes", now.minute() - (now.minute() % 10)).add(9, "minutes").startOf("minute").add(57, "seconds")
+    .set("minutes", now.minute() - (now.minute() % 10))
+    .add(9, "minutes")
+    .startOf("minute")
+    .add(57, "seconds")
 
-  // const nextHour = moment(now).startOf("hour").add(1, "hours")
-  // const next = nextHour.isBefore(next10Minutes) ? nextHour : next10Minutes
-  const next = next10Minutes
-  const timeout = next.diff(now)
-  // console.log(now, nextHour, next10Minutes, next, timeout)
-  console.log(now, next10Minutes, next, timeout)
+  const timeout = next10Minutes.diff(now)
+  console.log(now, next10Minutes, timeout)
 
-  return timeout
+  if (timeout >= 0)
+    return timeout
+  else
+    return getNextSchedule(now.add(10, "minutes"))
 }
 
 const startup = () => {
@@ -107,16 +111,16 @@ const startup = () => {
   const hideAndScheduleShow = () => {
     if (timeout != null)
       clearTimeout(timeout)
-    timeout = null
+    timeout = setTimeout(showAndScheduleHide, getNextSchedule(moment()))
     mainWindow.fadeOut()
-    setTimeout(showAndScheduleHide, getNextSchedule())
   }
 
   const showAndScheduleHide = () => {
     if (timeout != null)
       clearTimeout(timeout)
-    mainWindow.fadeIn()
+
     timeout = setTimeout(hideAndScheduleShow, showDuration)
+    mainWindow.fadeIn()
   }
 
   showAndScheduleHide()
