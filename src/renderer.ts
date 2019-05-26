@@ -1,4 +1,4 @@
-import { dialog, ipcRenderer, Menu, remote } from "electron";
+import { ipcRenderer, remote } from "electron";
 import * as $ from "jquery"
 import * as moment from "moment";
 import * as path from "path";
@@ -8,13 +8,16 @@ let origin = moment()
 const config = new Config()
 
 const fadeIn = () => {
-  $(".wrapper").fadeIn("slow")
+  $(".wrapper").fadeIn("slow", () => {
+    console.log("fadeInComplete")
+    ipcRenderer.send("fadeInComplete")
+  })
 }
 
 const fadeOut = () => {
   $(".wrapper").fadeOut("slow", () => {
-    console.log("hide")
-    ipcRenderer.send("hide")
+    console.log("fadeOutComplete")
+    ipcRenderer.send("fadeOutComplete")
   })
 }
 
@@ -83,7 +86,7 @@ const startupTray = () => {
     updateTray()
     setInterval(updateTray, trayUpdateInterval)
 
-    tray.setToolTip("Simple Clock and Elapsed Timer")
+    tray.setToolTip("TimeOut: Simple Clock and Elapsed Timer")
 
     const setContextMenu = (dimming: boolean) => {
       const dimmingLabel = "Turn " + (dimming ? "off" : "on") + " background dimming"
@@ -97,11 +100,34 @@ const startupTray = () => {
         {label: "Display the clock now", click() {
           ipcRenderer.send("show")
         }},
+        {label: "Display the clock ...", submenu: [
+          {label: "Every 3 minutes", click() {
+            config.setScheduleEvery3Minutes()
+            ipcRenderer.send("reschedule", Config.SCHEDULE_EVERY_3MIN)
+          }},
+          {label: "Every 25 minutes", click() {
+            config.setScheduleEvery25Minutes()
+            ipcRenderer.send("reschedule", Config.SCHEDULE_EVERY_25MIN)
+          }},
+          {label: "Every 10th minute", click() {
+            config.setScheduleEveryX0()
+            ipcRenderer.send("reschedule", Config.SCHEDULE_EVERY_X0)
+          }},
+          {label: "Every 30th minute", click() {
+            config.setScheduleEvery00And30()
+            ipcRenderer.send("reschedule", Config.SCHEDULE_EVERY_00_AND_30)
+          }},
+          {label: "Every hour on the hour", click() {
+            config.setScheduleEvery00()
+            ipcRenderer.send("reschedule", Config.SCHEDULE_EVERY_00)
+          }},
+        ]},
+        // {label: "Display Elapsed time", },
         {label: dimmingLabel, click() {
-          if (!dimming)
-            $(".background").show()
-          else
+          if (dimming)
             $(".background").hide()
+          else
+            $(".background").show()
 
           config.setBackgroundDimming(!dimming)
           setContextMenu(!dimming)
@@ -124,7 +150,7 @@ const startupTray = () => {
 startupTray()
 
 $(".wrapper").hide()
-fadeIn()
+// fadeIn()
 
 ipcRenderer.on("fadeIn", fadeIn)
 ipcRenderer.on("fadeOut", fadeOut)
