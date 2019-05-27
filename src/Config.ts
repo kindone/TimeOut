@@ -1,7 +1,10 @@
 
+import * as Store from "electron-store"
 
-
-
+interface ConfigValue {
+    dimming: boolean
+    scheduler: string
+}
 
 export default class Config {
     public static readonly SCHEDULE_EVERY_3MIN = "SCHEDULE_EVERY_3MIN"
@@ -9,13 +12,17 @@ export default class Config {
     public static readonly SCHEDULE_EVERY_X0 = "SCHEDULE_EVERY_X0"
     public static readonly SCHEDULE_EVERY_00 = "SCHEDULE_EVERY_00"
     public static readonly SCHEDULE_EVERY_00_AND_30 = "SCHEDULE_EVERY_00_AND_30"
-
-    private config =  {
+    public static readonly DEFAULT_VALUE = {
         dimming: true,
         scheduler: Config.SCHEDULE_EVERY_X0,
     }
 
+    private config: ConfigValue
+    private store = new Store()
+
     constructor() {
+        this.config = Config.DEFAULT_VALUE
+
         if (this.hasSavedConfig())
             this.config = this.loadConfig()
         else
@@ -61,15 +68,15 @@ export default class Config {
     }
 
     private saveConfig() {
-        localStorage.setItem("config", JSON.stringify(this.config))
+        this.store.set("config", this.config)
     }
 
-    private hasSavedConfig() {
-        return localStorage.getItem("config")
+    private hasSavedConfig(): boolean {
+        return this.store.has("config")
     }
 
-    private loadConfig() {
-        return JSON.parse(localStorage.getItem("config"))
+    private loadConfig(): ConfigValue {
+        return this.store.get("config", Config.DEFAULT_VALUE) as ConfigValue
     }
 }
 

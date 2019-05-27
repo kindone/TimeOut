@@ -1,9 +1,7 @@
-import { BaseTimerState, TimerContext } from ".";
-import { Scheduler } from "../scheduler";
+import { Scheduler } from "../scheduler"
 import { FadeInState } from "./FadeInState";
-import { FadeOutScheduledState } from "./FadeOutScheduledState";
 import { InitialTimerState } from "./InitialTimerState";
-
+import { BaseTimerState, TimerContext } from "./main";
 
 export class FadeInScheduledState extends BaseTimerState {
 
@@ -46,6 +44,4 @@ export class FadeInScheduledState extends BaseTimerState {
         super.changeScheduler(scheduler)
         this.reinitialize()
     }
-
-
 }

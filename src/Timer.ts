@@ -1,7 +1,7 @@
 import moment = require("moment");
 import { Scheduler, SchedulerForEveryX0 } from "./scheduler";
-import { TimerContext, TimerState } from "./state";
 import { InitialTimerState } from "./state/InitialTimerState";
+import { TimerContext, TimerState } from "./state/main";
 
 
 export class Timer implements TimerContext {

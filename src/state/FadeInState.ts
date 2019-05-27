@@ -1,7 +1,5 @@
-import { BaseTimerState, TimerContext } from ".";
-import { Scheduler } from "../scheduler";
 import { FadeOutScheduledState } from "./FadeOutScheduledState";
-
+import { BaseTimerState, TimerContext } from "./main";
 
 export class FadeInState extends BaseTimerState {
     constructor(context: TimerContext) {

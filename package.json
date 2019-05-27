@@ -2,7 +2,7 @@
   "name": "TimeOut",
   "version": "1.0.0",
   "description": "TimeOut",
-  "main": "./dist/index.js",
+  "main": "./dist/main.js",
   "scripts": {
     "assets": "rsync -az ./src/assets ./dist/",
     "build": "tsc",
@@ -27,9 +27,11 @@
     "electron-installer-dmg": "^2.0.0",
     "electron-packager": "^13.1.1",
     "tslint": "^5.10.0",
-    "typescript": "^2.8.3"
+    "typescript": "^3.4.5"
   },
   "dependencies": {
+    "@types/electron-store": "^3.2.0",
+    "electron-store": "^3.2.0",
     "jquery": "^3.3.1",
     "moment": "^2.24.0"
   }
