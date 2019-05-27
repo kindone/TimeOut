@@ -8,7 +8,7 @@ export class SchedulerForEvery3Minutes implements Scheduler {
     public getNextScheduleInMS(now: moment.Moment) {
         const next = moment(now).add(2, "minutes").add(57, "seconds")
         const timeout = next.diff(now)
-        console.log(now, next, timeout)
+        console.log("SchedulerForEvery3Minutes", now, next, timeout)
 
         return timeout >= 0 ? timeout : 0
     }

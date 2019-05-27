@@ -1,13 +1,13 @@
 import moment = require("moment");
 import { Scheduler, SchedulerForEveryX0 } from "./scheduler";
+import { TimerContext, TimerState } from "./state";
 import { InitialTimerState } from "./state/InitialTimerState";
-import { TimerContext, TimerState } from "./state/main";
 
 
 export class Timer implements TimerContext {
-    public timerState: TimerState = new InitialTimerState(this)
     private scheduler: Scheduler
     private timeout: NodeJS.Timeout = null
+    private timerState: TimerState = new InitialTimerState(this)
 
     constructor(scheduler: Scheduler = new SchedulerForEveryX0(moment()),
                 readonly fadeInCallback: () => void,
@@ -20,17 +20,17 @@ export class Timer implements TimerContext {
             clearTimeout(this.timeout)
 
         const now = moment()
-        const next = this.scheduler.getNextScheduleInMS(now)
+        const nextSchedule = this.scheduler.getNextScheduleInMS(now)
         this.timeout = setTimeout(() => {
             this.timerState.fadeIn()
-        }, next)
+        }, nextSchedule)
     }
 
     public fadeIn(): void {
         this.fadeInCallback()
     }
 
-    public fadeInCompete(): void {
+    public fadeInComplete(): void {
         this.timerState.scheduleFadeOut()
     }
 
@@ -69,13 +69,13 @@ export class Timer implements TimerContext {
         this.timeout = null
     }
 
+    public getScheduler(): Scheduler {
+        return this.scheduler
+    }
+
     public changeScheduler(scheduler: Scheduler): void {
         this.scheduler = scheduler
         this.timerState.reinitialize()
-    }
-
-    public getScheduler(): Scheduler {
-        return this.scheduler
     }
 
     public changeState(newState: TimerState): void {

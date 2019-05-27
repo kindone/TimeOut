@@ -11,8 +11,9 @@ export class SchedulerForEveryX0 implements Scheduler {
         .add(9, "minutes")
         .startOf("minute")
         .add(57, "seconds")
+
         const timeout = next.diff(now)
-        console.log(now, next, timeout)
+        console.log("SchedulerForEveryX0", now, next, timeout)
 
         return timeout >= 0 ? timeout : 0
     }
