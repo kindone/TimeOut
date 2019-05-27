@@ -1,4 +1,5 @@
 import { ipcRenderer, remote, Tray } from "electron";
+import * as $ from "jquery"
 import * as path from "path";
 import Config from "./Config";
 import { Event } from "./Event";
