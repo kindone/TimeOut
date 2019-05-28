@@ -16,6 +16,9 @@ const createMainWindow = (debug = false) => {
         closable: false,
         focusable: false,
         show: false,
+        webPreferences: {
+            nodeIntegration: true
+        }
     })
 
     window.on("show", () => {

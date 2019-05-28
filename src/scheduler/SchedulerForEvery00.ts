@@ -12,7 +12,7 @@ export class SchedulerForEvery00 implements Scheduler {
         .subtract(3, "seconds")
 
         const timeout = next.diff(now)
-        console.log("SchedulerForEvery00", now, next, timeout)
+        // console.log("SchedulerForEvery00", now, next, timeout)
 
         return timeout >= 0 ? timeout : 0
     }

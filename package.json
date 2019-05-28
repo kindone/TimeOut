@@ -8,7 +8,7 @@
     "build": "tsc",
     "watch": "tsc -w",
     "lint": "tslint -c tslint.json -p tsconfig.json",
-    "start": "npm run build && electron --enable-transparent-visuals --disable-gpu ./dist/index.js",
+    "start": "npm run build && electron --enable-transparent-visuals --disable-gpu ./dist/main.js",
     "package": "electron-packager . TimeOut --out=pkg --ignore=src --ignore=pkg --icon=icon.icns --asar --overwrite",
     "dmg": "electron-installer-dmg ./pkg/TimeOut-darwin-x64/TimeOut.app TimeOut --out=pkg --overwrite --icon=icon.icns",
     "release": "npm run assets && npm run build && npm run package && npm run dmg"
@@ -23,14 +23,13 @@
   "devDependencies": {
     "@types/jquery": "^3.3.29",
     "asar": "^1.0.0",
-    "electron": "^4.0.5",
+    "electron": "^5.0.2",
     "electron-installer-dmg": "^2.0.0",
     "electron-packager": "^13.1.1",
     "tslint": "^5.10.0",
     "typescript": "^3.4.5"
   },
   "dependencies": {
-    "@types/electron-store": "^3.2.0",
     "electron-store": "^3.2.0",
     "jquery": "^3.3.1",
     "moment": "^2.24.0"

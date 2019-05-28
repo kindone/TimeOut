@@ -23,8 +23,7 @@ const startup = () => {
         mainWindow.fadeOut()
     })
 
-    timer.reinitialize()
-
+    
     // resume from standby
     powerMonitor.on("resume", () => {
         console.log("resume from standby")
@@ -69,6 +68,8 @@ const startup = () => {
         mainWindow.close()
         app.quit()
     })
+
+    timer.reinitialize()    
 
 }
 
