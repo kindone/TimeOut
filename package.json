@@ -9,8 +9,8 @@
     "watch": "tsc -w",
     "lint": "tslint -c tslint.json -p tsconfig.json",
     "start": "npm run build && electron --enable-transparent-visuals --disable-gpu ./dist/main.js",
-    "package": "electron-packager . TimeOut --out=pkg --ignore=src --ignore=pkg --icon=icon.icns --asar --overwrite",
-    "dmg": "electron-installer-dmg ./pkg/TimeOut-darwin-x64/TimeOut.app TimeOut --out=pkg --overwrite --icon=icon.icns",
+    "package": "electron-packager . TimeOut --out=GEN --ignore=src --ignore='GEN' --icon=icon.icns --asar --overwrite",
+    "dmg": "electron-installer-dmg ./GEN/TimeOut-darwin-x64/TimeOut.app TimeOut --out=GEN --overwrite --icon=icon.icns",
     "release": "npm run assets && npm run build && npm run package && npm run dmg"
   },
   "repository": "https://github.com/kindone/timeout",

@@ -59,7 +59,7 @@ export class Timer implements TimerContext {
         this.timerState.scheduleFadeIn()
     }
 
-    public resumed(): void {        
+    public resumed(): void {
         this.timerState.reinitialize()
     }
 
