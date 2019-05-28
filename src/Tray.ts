@@ -20,6 +20,7 @@ export const startupTray = (resetCallback: () => void): Tray => {
     const setContextMenu = (dimming: boolean) => {
         remoteConsole.log("dimming:", dimming)
         const dimmingLabel = "Turn " + (dimming ? "off" : "on") + " background dimming"
+        const scheduler = config.getScheduler()
 
         const contextMenu = remote.Menu.buildFromTemplate([
             {label: "About TimeOut", click() {
@@ -34,23 +35,23 @@ export const startupTray = (resetCallback: () => void): Tray => {
                 {label: "Every 3 minutes", click() {
                     config.setScheduleEvery3Minutes()
                     ipcRenderer.send(Event.RESCHEDULE, Config.SCHEDULE_EVERY_3MIN)
-                }},
+                }, type: "radio", checked: scheduler === Config.SCHEDULE_EVERY_3MIN},
                 {label: "Every 25 minutes", click() {
                     config.setScheduleEvery25Minutes()
                     ipcRenderer.send(Event.RESCHEDULE, Config.SCHEDULE_EVERY_25MIN)
-                }},
+                }, type: "radio", checked: scheduler === Config.SCHEDULE_EVERY_25MIN},
                 {label: "Every 10th minute", click() {
                     config.setScheduleEveryX0()
                     ipcRenderer.send(Event.RESCHEDULE, Config.SCHEDULE_EVERY_X0)
-                }},
+                }, type: "radio", checked: scheduler === Config.SCHEDULE_EVERY_X0},
                 {label: "Every 30th minute", click() {
                     config.setScheduleEvery00And30()
                     ipcRenderer.send(Event.RESCHEDULE, Config.SCHEDULE_EVERY_00_AND_30)
-                }},
+                }, type: "radio", checked: scheduler === Config.SCHEDULE_EVERY_00_AND_30},
                 {label: "Every hour on the hour", click() {
                     config.setScheduleEvery00()
                     ipcRenderer.send(Event.RESCHEDULE, Config.SCHEDULE_EVERY_00)
-                }},
+                }, type: "radio", checked: scheduler === Config.SCHEDULE_EVERY_00},
             ]},
             // {label: "Display Elapsed time", },
             {label: dimmingLabel, click() {
@@ -74,9 +75,9 @@ export const startupTray = (resetCallback: () => void): Tray => {
         tray.setContextMenu(contextMenu)
     }
 
-    const dimming = config.getBackgroundDimming()
-    setContextMenu(dimming)
-    if (dimming)
+    const dimmingFromConfig = config.getBackgroundDimming()
+    setContextMenu(dimmingFromConfig)
+    if (dimmingFromConfig)
         $(".background").show()
     else
         $(".background").hide()

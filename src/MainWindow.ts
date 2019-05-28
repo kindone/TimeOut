@@ -15,14 +15,13 @@ const createMainWindow = (debug = false) => {
         frame: false,
         closable: false,
         focusable: false,
-        show: false,
+        show: true,
         webPreferences: {
-            nodeIntegration: true
-        }
+            nodeIntegration: true,
+        },
     })
 
     window.on("show", () => {
-        console.log("ready-to-show")
         window.blur()
         window.blurWebView()
     })

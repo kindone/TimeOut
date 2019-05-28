@@ -63,7 +63,7 @@ export default class Config {
         this.saveConfig()
     }
 
-    public getSchedule() {
+    public getScheduler() {
         return this.config.scheduler
     }
 

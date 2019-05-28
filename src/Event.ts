@@ -6,5 +6,6 @@ export class Event {
     public static readonly FADEOUTCOMPLETE = "fadeOutComplete"
     public static readonly FADEOUT = "fadeOut"
     public static readonly RESCHEDULE = "reschedule"
+    public static readonly READY = "ready"
 }
 

@@ -62,3 +62,5 @@ $(".wrapper").hide()
 
 ipcRenderer.on(Event.FADEIN, fadeIn)
 ipcRenderer.on(Event.FADEOUT, fadeOut)
+
+ipcRenderer.send(Event.READY)
