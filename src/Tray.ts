@@ -54,13 +54,14 @@ export const startupTray = (resetCallback: () => void): Tray => {
             ]},
             // {label: "Display Elapsed time", },
             {label: dimmingLabel, click() {
-                if (dimming)
-                    $(".background").hide()
-                else
+                const newDimming = !dimming
+                if (newDimming)
                     $(".background").show()
+                else
+                    $(".background").hide()
 
-                config.setBackgroundDimming(!dimming)
-                setContextMenu(!dimming)
+                config.setBackgroundDimming(newDimming)
+                setContextMenu(newDimming)
             }},
             {label: "Reset elapsed time", click() {
                 resetCallback()
@@ -73,7 +74,12 @@ export const startupTray = (resetCallback: () => void): Tray => {
         tray.setContextMenu(contextMenu)
     }
 
-    setContextMenu(config.getBackgroundDimming())
+    const dimming = config.getBackgroundDimming()
+    setContextMenu(dimming)
+    if (dimming)
+        $(".background").show()
+    else
+        $(".background").hide()
 
     return tray
 }

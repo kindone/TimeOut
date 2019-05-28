@@ -27,7 +27,7 @@ const startup = () => {
     // resume from standby
     powerMonitor.on("resume", () => {
         console.log("resume from standby")
-        timer.reinitialize()
+        timer.resumed()
     })
 
     ipcMain.on(Event.FADEINCOMPLETE, () => {
