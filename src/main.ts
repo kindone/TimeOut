@@ -51,7 +51,8 @@ const startup = () => {
     ipcMain.on(Event.RESCHEDULE, (event: Event, schedulerName: string) => {
         console.log(Event.RESCHEDULE)
         const scheduler = SchedulerFactory.create(schedulerName, moment())
-        return timer.changeScheduler(scheduler)
+        timer.changeScheduler(scheduler)
+        timer.showImmediately()
     })
 
     ipcMain.on(Event.QUIT, () => {
@@ -60,6 +61,7 @@ const startup = () => {
     })
 
     timer.reinitialize()
+
 }
 
 app.dock.hide()
