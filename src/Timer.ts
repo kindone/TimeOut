@@ -39,7 +39,7 @@ export class Timer implements TimerContext {
             clearTimeout(this.timeout)
 
         const now = moment()
-        const next = moment(now).add(3, "seconds").diff(now)
+        const next = moment(now).add(4, "seconds").diff(now)
 
         this.timeout = setTimeout(() => {
             this.timerState.fadeOut()

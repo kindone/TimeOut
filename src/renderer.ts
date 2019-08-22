@@ -59,7 +59,7 @@ function initClock() {
 
     rshadow.attr({
         transform: "translate(0, 8) ",
-    opacity: 0.5,
+        opacity: 0.5,
         filter: s.filter(Snap.filter.blur(0, 8) + Snap.filter.brightness(0)),
     })
 
@@ -143,16 +143,20 @@ function initClock() {
 }
 
 const fadeIn = () => {
-    $(".wrapper").fadeIn("slow", () => {
-        console.log(Event.FADEINCOMPLETE)
-        ipcRenderer.send(Event.FADEINCOMPLETE)
+    $(".wrapper").fadeIn("fast", () => {
+        $("#clock").fadeIn("fast", () => {
+            console.log(Event.FADEINCOMPLETE)
+            ipcRenderer.send(Event.FADEINCOMPLETE)
+        })
     })
 }
 
 const fadeOut = () => {
-    $(".wrapper").fadeOut("slow", () => {
-        console.log(Event.FADEOUTCOMPLETE)
-        ipcRenderer.send(Event.FADEOUTCOMPLETE)
+    $("#clock").fadeOut("slow", () => {
+        $(".wrapper").fadeOut("slow", () => {
+            console.log(Event.FADEOUTCOMPLETE)
+            ipcRenderer.send(Event.FADEOUTCOMPLETE)
+        })
     })
 }
 
@@ -188,6 +192,7 @@ const updateTray = () => {
 updateTray()
 setInterval(updateTray, trayUpdateInterval)
 
+$("#clock").hide()
 $(".wrapper").hide()
 
 ipcRenderer.on(Event.FADEIN, fadeIn)
